@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        #response {
+            margin-top: 20px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h2>Chatbot Test</h2>
+    <input type="text" id="userInput" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+    <div id="response"></div>
+
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById("userInput").value;
+            const responseDiv = document.getElementById("response");
+
+            if (!userInput) {
+                responseDiv.innerHTML = "Please enter a message!";
+                return;
+            }
+
+            responseDiv.innerHTML = "Sending...";
+
+            try {
+                const response = await fetch("https://bot-5su2.onrender.com/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ user_input: userInput })  // Matches FastAPI's expected format
+                });
+
+                const data = await response.json();
+                responseDiv.innerHTML = "Bot: " + (data.response || "No response received");
+            } catch (error) {
+                responseDiv.innerHTML = "Error: Could not reach the server.";
+            }
+        }
+    </script>
+</body>
+</html>
